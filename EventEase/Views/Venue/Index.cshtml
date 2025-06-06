@@ -9,6 +9,29 @@
     <a asp-action="Create" class="btn btn-success">+ Add Venue</a>
 </div>
 
+<!-- Search and Filter Form -->
+<form asp-action="Index" method="get" class="mb-4">
+    <div class="row g-3">
+        <div class="col-md-6">
+            <input type="text" name="search" class="form-control" placeholder="Search by name or location..." value="@Context.Request.Query["search"]" />
+        </div>
+        <div class="col-md-4">
+            <select name="available" class="form-select">
+                <option value="">All Availability</option>
+                <option value="true" selected="@(Context.Request.Query["available"] == "true")">Available Only</option>
+                <option value="false" selected="@(Context.Request.Query["available"] == "false")">Unavailable Only</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-primary w-100">Filter</button>
+            @if (!string.IsNullOrEmpty(Context.Request.Query["search"]) || !string.IsNullOrEmpty(Context.Request.Query["available"]))
+            {
+                <a asp-action="Index" class="btn btn-outline-secondary w-100 mt-2">Reset</a>
+            }
+        </div>
+    </div>
+</form>
+
 <!-- TempData Alerts -->
 @if (TempData["Message"] != null)
 {

@@ -30,7 +30,7 @@ namespace EventEase.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index(string search)
+        public async Task<IActionResult> Index(string search, bool? available)
         {
             var venues = from v in _context.Venues
                          select v;
@@ -40,6 +40,12 @@ namespace EventEase.Controllers
                 venues = venues.Where(v =>
                     v.VenueName.Contains(search) ||
                     v.Location.Contains(search));
+            }
+
+            // Add availability filter
+            if (available.HasValue)
+            {
+                venues = venues.Where(v => v.Availability == available.Value);
             }
 
             return View(await venues.ToListAsync());
@@ -82,7 +88,8 @@ namespace EventEase.Controllers
                 {
                     VenueName = venueViewModel.VenueName,
                     Location = venueViewModel.Location,
-                    Capacity = venueViewModel.Capacity
+                    Capacity = venueViewModel.Capacity,
+                    Availability = venueViewModel.Availability
                 };
 
                 // Initially, use placeholder URL
@@ -146,6 +153,7 @@ namespace EventEase.Controllers
                     venue.VenueName = venueViewModel.VenueName;
                     venue.Location = venueViewModel.Location;
                     venue.Capacity = venueViewModel.Capacity;
+                    venue.Availability = venueViewModel.Availability;
 
                     // In Part 2, we'll use:
                     if (venueViewModel.ImageFile != null)

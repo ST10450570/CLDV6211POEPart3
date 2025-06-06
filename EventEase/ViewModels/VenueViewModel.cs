@@ -17,10 +17,11 @@ namespace EventEase.ViewModels
         [Range(1, int.MaxValue, ErrorMessage = "Capacity must be greater than 0")]
         public int Capacity { get; set; }
 
+        public bool Availability { get; set; } = true;
+
         public string? ExistingImageUrl { get; set; }
 
         [Display(Name = "Venue Image")]
-
-        public IFormFile? ImageFile { get; set; }  // ✅ This is required for binding the uploaded image
+        public IFormFile? ImageFile { get; set; }
     }
 }

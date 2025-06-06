@@ -1,6 +1,5 @@
 ﻿@model EventEase.ViewModels.VenueViewModel
 
-
 @{
     ViewData["Title"] = "Edit Venue";
 }
@@ -27,6 +26,11 @@
         <label asp-for="Capacity" class="form-label"></label>
         <input asp-for="Capacity" class="form-control" />
         <span asp-validation-for="Capacity" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3 form-check">
+        <input type="checkbox" asp-for="Availability" class="form-check-input" />
+        <label asp-for="Availability" class="form-check-label"></label>
     </div>
 
     <div class="mb-3">

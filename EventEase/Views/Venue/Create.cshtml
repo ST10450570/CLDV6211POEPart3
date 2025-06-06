@@ -1,54 +1,49 @@
 ﻿@model EventEase.ViewModels.VenueViewModel
 
-
 @{
-    ViewData["Title"] = "Edit Venue";
+    ViewData["Title"] = "Create Venue";
 }
 
-<h1>Edit Venue</h1>
+<h1>Create Venue</h1>
 
-<form asp-action="Edit" enctype="multipart/form-data">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <input type="hidden" asp-for="VenueId" />
-
-    <div class="mb-3">
-        <label asp-for="VenueName" class="form-label"></label>
-        <input asp-for="VenueName" class="form-control" />
-        <span asp-validation-for="VenueName" class="text-danger"></span>
+<hr />
+<div class="row">
+    <div class="col-md-8">
+        <form asp-action="Create" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="VenueName" class="control-label"></label>
+                <input asp-for="VenueName" class="form-control" />
+                <span asp-validation-for="VenueName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Location" class="control-label"></label>
+                <input asp-for="Location" class="form-control" />
+                <span asp-validation-for="Location" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Capacity" class="control-label"></label>
+                <input asp-for="Capacity" class="form-control" />
+                <span asp-validation-for="Capacity" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="Availability" checked />
+                    @Html.DisplayNameFor(model => model.Availability)
+                </label>
+            </div>
+            <div class="form-group">
+                <label asp-for="ImageFile" class="control-label"></label>
+                <input asp-for="ImageFile" type="file" class="form-control" />
+                <span asp-validation-for="ImageFile" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+            </div>
+        </form>
     </div>
-
-    <div class="mb-3">
-        <label asp-for="Location" class="form-label"></label>
-        <input asp-for="Location" class="form-control" />
-        <span asp-validation-for="Location" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="Capacity" class="form-label"></label>
-        <input asp-for="Capacity" class="form-control" />
-        <span asp-validation-for="Capacity" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="ExistingImageUrl" class="form-label">Current Image</label><br />
-        @if (!string.IsNullOrEmpty(Model.ExistingImageUrl))
-        {
-            <img src="@Model.ExistingImageUrl" alt="Venue Image" style="max-width: 200px; height: auto;" class="mb-2 rounded shadow-sm" />
-        }
-        else
-        {
-            <p class="text-muted">No image uploaded</p>
-        }
-    </div>
-
-    <div class="mb-3">
-        <label class="form-label">Upload New Image (optional)</label>
-        <input type="file" name="ImageFile" class="form-control" />
-    </div>
-
-    <button type="submit" class="btn btn-primary">Save Changes</button>
-    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
-</form>
+</div>
 
 @section Scripts {
     @{
