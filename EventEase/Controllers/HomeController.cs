@@ -22,37 +22,43 @@ namespace EventEase.Controllers
         {
             try
             {
-                // Get future events with venue and event type information
-                var futureEvents = await _context.Events  // Fixed from _contextEvents to _context.Events
+                var futureEvents = await _context.Events
                     .Include(e => e.Venue)
                     .Include(e => e.EventType)
-                    .Where(e => e.EventDate >= DateTime.Today)  // Fixed from DateTime Today
+                    .Where(e => e.EventDate >= DateTime.Today)
                     .OrderBy(e => e.EventDate)
-                    .Take(5)  // Fixed from Take(E) to Take(5)
+                    .Take(5)
                     .ToListAsync();
 
-                // Get random featured venues with availability check
                 var featuredVenues = await _context.Venues
-                    .Where(v => v.Availability)  // Fixed incomplete condition
-                    .OrderBy(v => Guid.NewGuid())  // Fixed from Gc to Guid.NewGuid()
-                    .Take(5)  // Fixed from Take(S) to Take(5)
+                    .Where(v => v.Availability)
+                    .OrderBy(v => Guid.NewGuid())
+                    .Take(5)
+                    .ToListAsync();
+
+                var recentBookings = await _context.Bookings
+                    .Include(b => b.Event)
+                    .Include(b => b.Venue)
+                    .OrderByDescending(b => b.BookingDate)
+                    .Take(5)
                     .ToListAsync();
 
                 var viewModel = new HomeViewModel
                 {
                     FutureEvents = futureEvents,
-                    FeaturedVenues = featuredVenues
+                    FeaturedVenues = featuredVenues,
+                    RecentBookings = recentBookings
                 };
 
                 return View(viewModel);
             }
             catch (Exception ex)
             {
-                // Log the error (you should implement proper logging)
                 Console.WriteLine($"Error in HomeController: {ex.Message}");
-                return View("Error", new ErrorViewModel { RequestId = HttpContext.TraceIdentifier });
+                return View("Error");
             }
         }
+
 
         public IActionResult Privacy()
         {

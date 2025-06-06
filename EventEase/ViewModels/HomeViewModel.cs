@@ -7,6 +7,7 @@ namespace EventEase.Models
     {
         public IEnumerable<Event>? FutureEvents { get; set; }
         public IEnumerable<Venue>? FeaturedVenues { get; set; }
+        public IEnumerable<Booking>? RecentBookings { get; set; }
     }
 
    

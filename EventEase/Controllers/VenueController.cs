@@ -89,10 +89,10 @@ namespace EventEase.Controllers
                 venue.ImageUrl = "/images/placeholder-venue.jpg";
 
                 // In Part 2, we'll replace with:
-                 if (venueViewModel.ImageFile != null)
-                 {
-                     venue.ImageUrl = await _imageService.UploadImageAsync(venueViewModel.ImageFile, "venue");
-                 }
+                if (venueViewModel.ImageFile != null)
+                {
+                    venue.ImageUrl = await _imageService.UploadImageAsync(venueViewModel.ImageFile, "venue");
+                }
 
                 _context.Add(venue);
                 await _context.SaveChangesAsync();
@@ -148,15 +148,15 @@ namespace EventEase.Controllers
                     venue.Capacity = venueViewModel.Capacity;
 
                     // In Part 2, we'll use:
-                     if (venueViewModel.ImageFile != null)
-                     {
-                         // Delete old image if it exists and is not the placeholder
-                         if (!string.IsNullOrEmpty(venue.ImageUrl) && !venue.ImageUrl.Contains("placeholder"))
-                         {
-                             await _imageService.DeleteImageAsync(venue.ImageUrl);
-                         }
-                         venue.ImageUrl = await _imageService.UploadImageAsync(venueViewModel.ImageFile, "venue");
-                     }
+                    if (venueViewModel.ImageFile != null)
+                    {
+                        // Delete old image if it exists and is not the placeholder
+                        if (!string.IsNullOrEmpty(venue.ImageUrl) && !venue.ImageUrl.Contains("placeholder"))
+                        {
+                            await _imageService.DeleteImageAsync(venue.ImageUrl);
+                        }
+                        venue.ImageUrl = await _imageService.UploadImageAsync(venueViewModel.ImageFile, "venue");
+                    }
 
                     _context.Update(venue);
                     await _context.SaveChangesAsync();
@@ -225,9 +225,9 @@ namespace EventEase.Controllers
 
             // In Part 2, we'll add:
             if (!string.IsNullOrEmpty(venue.ImageUrl) && !venue.ImageUrl.Contains("placeholder"))
-             {
-                 await _imageService.DeleteImageAsync(venue.ImageUrl);
-             }
+            {
+                await _imageService.DeleteImageAsync(venue.ImageUrl);
+            }
 
             _context.Venues.Remove(venue);
             await _context.SaveChangesAsync();
