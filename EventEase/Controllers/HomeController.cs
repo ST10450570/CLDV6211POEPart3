@@ -1,11 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using EventEase.Data;
+using EventEase.Models;
 using EventEase.ViewModels;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using EventEase.Models;
 
 namespace EventEase.Controllers
 {
@@ -20,27 +20,38 @@ namespace EventEase.Controllers
 
         public async Task<IActionResult> Index()
         {
-            // Ensure future events only and include venue info
-            var futureEvents = await _context.Events
-                .Include(e => e.Venue)
-                .Where(e => e.EventDate >= DateTime.Today)
-                .OrderBy(e => e.EventDate)
-                .Take(5)
-                .ToListAsync();
-
-            // Get random featured venues or top 5 venues
-            var featuredVenues = await _context.Venues
-                .OrderBy(v => Guid.NewGuid())
-                .Take(5)
-                .ToListAsync();
-
-            var viewModel = new HomeViewModel
+            try
             {
-                FutureEvents = futureEvents,
-                FeaturedVenues = featuredVenues
-            };
+                // Get future events with venue and event type information
+                var futureEvents = await _context.Events  // Fixed from _contextEvents to _context.Events
+                    .Include(e => e.Venue)
+                    .Include(e => e.EventType)
+                    .Where(e => e.EventDate >= DateTime.Today)  // Fixed from DateTime Today
+                    .OrderBy(e => e.EventDate)
+                    .Take(5)  // Fixed from Take(E) to Take(5)
+                    .ToListAsync();
 
-            return View(viewModel);
+                // Get random featured venues with availability check
+                var featuredVenues = await _context.Venues
+                    .Where(v => v.Availability)  // Fixed incomplete condition
+                    .OrderBy(v => Guid.NewGuid())  // Fixed from Gc to Guid.NewGuid()
+                    .Take(5)  // Fixed from Take(S) to Take(5)
+                    .ToListAsync();
+
+                var viewModel = new HomeViewModel
+                {
+                    FutureEvents = futureEvents,
+                    FeaturedVenues = featuredVenues
+                };
+
+                return View(viewModel);
+            }
+            catch (Exception ex)
+            {
+                // Log the error (you should implement proper logging)
+                Console.WriteLine($"Error in HomeController: {ex.Message}");
+                return View("Error", new ErrorViewModel { RequestId = HttpContext.TraceIdentifier });
+            }
         }
 
         public IActionResult Privacy()

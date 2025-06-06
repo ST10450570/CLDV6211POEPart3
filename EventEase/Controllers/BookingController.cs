@@ -20,14 +20,50 @@ namespace EventEase.Controllers
         }
 
         // GET: Bookings
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchTerm, int? eventTypeId,
+            DateTime? startDate, DateTime? endDate, bool? venueAvailability)
         {
-            var bookings = await _context.Bookings
+            var bookingsQuery = _context.Bookings
                 .Include(b => b.Event)
+                    .ThenInclude(e => e.EventType)
                 .Include(b => b.Venue)
-                .ToListAsync();
+                .AsQueryable();
 
-            return View(bookings);
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                bookingsQuery = bookingsQuery.Where(b =>
+                    b.BookingId.ToString().Contains(searchTerm) ||
+                    b.Event.EventName.Contains(searchTerm) ||
+                    b.Venue.VenueName.Contains(searchTerm));
+            }
+
+            if (eventTypeId.HasValue)
+            {
+                bookingsQuery = bookingsQuery.Where(b => b.Event.EventTypeId == eventTypeId.Value);
+            }
+
+            if (startDate.HasValue)
+            {
+                bookingsQuery = bookingsQuery.Where(b => b.BookingDate >= startDate.Value);
+            }
+
+            if (endDate.HasValue)
+            {
+                bookingsQuery = bookingsQuery.Where(b => b.BookingDate <= endDate.Value);
+            }
+
+            if (venueAvailability.HasValue)
+            {
+                bookingsQuery = bookingsQuery.Where(b => b.Venue.Availability == venueAvailability.Value);
+            }
+
+            ViewData["EventTypes"] = new SelectList(_context.EventTypes, "EventTypeId", "EventTypeName", eventTypeId);
+            ViewData["SearchTerm"] = searchTerm;
+            ViewData["StartDate"] = startDate?.ToString("yyyy-MM-dd");
+            ViewData["EndDate"] = endDate?.ToString("yyyy-MM-dd");
+            ViewData["VenueAvailability"] = venueAvailability;
+
+            return View(await bookingsQuery.ToListAsync());
         }
 
         // GET: Bookings/Search
